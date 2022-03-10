@@ -2,13 +2,17 @@ $Updates = Start-WUScan
 Format-List -InputObject $Updates -Property Title, Description
 Write-Host "Updates found: " $Updates.Count
 
-If(Get-WUIsPendingReboot) {
+If (Get-WUIsPendingReboot) {
     Write-Host "Reboot pending. Rerun after reboot."
     Write-Host "Rebooting..."
     Restart-Computer
-} else {
+}
+elseif ($Updates.Count -gt 0) {
     Install-WUUpdates -Updates $Updates
-    If(Get-WUIsPendingReboot) {
+    If (Get-WUIsPendingReboot) {
         Restart-Computer
     }
+}
+else {
+    Write-Host "Nothing to do."
 }
